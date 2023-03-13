@@ -31,26 +31,35 @@ void printIncomingMessage(int socketFd)
         }
         receivedMessage[amountReceived] = 0; // clear the previous message from buffer
         cout << receivedMessage << endl;
+        // cout << "you: ";
+        // cout.flush();
     }
     close(socketFd);
 }
 
 // reading your message and sending it to the server
-void readMessageAndSendToServer(int socketFd)
+void readMessageAndSendToServer(int socketFd, string name)
 {   
-    string name;
-    cout << "Enter your Name : ";
-    getline(cin, name);
+    // string name;
+    // cout << "Enter your Name : ";
+    // getline(cin, name);
+    string connectedMessage = name + " is now connected.";
+    string disconnectedMessage = name + " is now disconnected.";
+
+    send(socketFd, connectedMessage.c_str(), connectedMessage.length() * sizeof(char), 0);
 
     string message;
     while (true) {
-        cout << "You: ";
+        // cout << "You: ";
         getline(cin, message);
 
         if (message == "exit") {
+            send(socketFd, disconnectedMessage.c_str(), disconnectedMessage.length() * sizeof(char), 0);
+            cout << "You are now disconnected.\n";
             break;
         }
-        send(socketFd, message.c_str(), message.length() * sizeof(char), 0);
+        string sendMessage = name + ": " + message;
+        send(socketFd, sendMessage.c_str(), sendMessage.length() * sizeof(char), 0);
     }
 }
 
@@ -71,15 +80,18 @@ int main()
     inet_pton(AF_INET, ip, &server.sin_addr.s_addr);
 
     // Connect to the server
+    string name;
+    cout << "Enter your Name : ";
+    getline(cin, name);
     int result = connect(sockFd, (struct sockaddr *)&server, sizeof(server));
     if(result == 0)
-        cout << "Connection Succesful\n";
+        cout << "You are now connected.\n";
     else
         cout << "Failed to connect to the server\n";
 
 
     createNewThreadToListenMessage(sockFd);
-    readMessageAndSendToServer(sockFd);
+    readMessageAndSendToServer(sockFd, name);
 
     close(sockFd);
     shutdown(sockFd, SHUT_RDWR);
