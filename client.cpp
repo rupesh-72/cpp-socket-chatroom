@@ -30,9 +30,7 @@ void printIncomingMessage(int socketFd)
             break;
         }
         receivedMessage[amountReceived] = 0; // clear the previous message from buffer
-        cout << receivedMessage << endl;
-        // cout << "you: ";
-        // cout.flush();
+        cout << "\r" << receivedMessage << endl << "You: " << flush; // \r is used to move the cursor to beginning of current line to print the received message before you: 
     }
     close(socketFd);
 }
@@ -40,9 +38,6 @@ void printIncomingMessage(int socketFd)
 // reading your message and sending it to the server
 void readMessageAndSendToServer(int socketFd, string name)
 {   
-    // string name;
-    // cout << "Enter your Name : ";
-    // getline(cin, name);
     string connectedMessage = name + " is now connected.";
     string disconnectedMessage = name + " is now disconnected.";
 
@@ -50,7 +45,7 @@ void readMessageAndSendToServer(int socketFd, string name)
 
     string message;
     while (true) {
-        // cout << "You: ";
+        cout << "You: " << flush;
         getline(cin, message);
 
         if (message == "exit") {
@@ -59,6 +54,7 @@ void readMessageAndSendToServer(int socketFd, string name)
             break;
         }
         string sendMessage = name + ": " + message;
+        sendMessage.push_back('\0'); // added null character to eliminate printing of message multiples times on the client side
         send(socketFd, sendMessage.c_str(), sendMessage.length() * sizeof(char), 0);
     }
 }
