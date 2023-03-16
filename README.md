@@ -15,4 +15,5 @@ g++ client.cpp
 ./client
 ```
 ## Screenshot
-![cpp-chat](https://user-images.githubusercontent.com/120365138/225056135-f18082bd-d901-4476-a2d8-8cf6cc9257d3.png)
+
+![cpp-chat](https://user-images.githubusercontent.com/120365138/225666050-abcd804a-e51b-4272-9297-545d08beacaa.png)
